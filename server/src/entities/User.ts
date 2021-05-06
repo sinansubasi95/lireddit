@@ -16,10 +16,11 @@ export class User {
   @Property({ type: "date", onUpdate: () => new Date() }) // It is going to create date every time we update
   updatedAt = new Date();
 
-  @Field()
+  @Field(() => String)
   @Property({ type: "text", unique: true })
   username!: string;
 
+  @Field(() => String)
   @Property({ type: "text" })
   password!: string;
 }
