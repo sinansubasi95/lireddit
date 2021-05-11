@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
-// import { Post } from "./entities/Post";
 import microConfig from "./mikro-orm.config";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
@@ -19,8 +18,8 @@ const main = async () => {
     const orm = await MikroORM.init(microConfig);
     await orm.getMigrator().up(); // automatically run the migration
 
-    const RedisStore = connectRedis(session)
-    const redisClient = redis.createClient()
+    const RedisStore = connectRedis(session);
+    const redisClient = redis.createClient();
     
     const app = express();
 
@@ -28,6 +27,13 @@ const main = async () => {
         origin: 'http://localhost:3000',
         credentials: true
     }));
+
+    // app.options('/login', function (req, res) {
+    //     res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+    //     res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    //     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    //     res.end();
+    // });
 
     app.use(
       session({
