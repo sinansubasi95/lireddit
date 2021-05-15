@@ -23,17 +23,17 @@ const main = async () => {
     
     const app = express();
 
+    /**
+     * @throws Access to fetch at 'http://localhost:4000/graphql' from origin 'http://localhost:3000' has been blocked by CORS policy: Response to
+     * preflight request doesn't pass access control check: The value of the 'Access-Control-Allow-Origin' header in the response
+     * must not be the wildcard '*' when the request's credentials mode is 'include'.
+     * 
+     * @see https://stackoverflow.com/a/56954564
+     */
     app.use(cors({
         origin: 'http://localhost:3000',
         credentials: true
     }));
-
-    // app.options('/login', function (req, res) {
-    //     res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-    //     res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    //     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    //     res.end();
-    // });
 
     app.use(
       session({
@@ -59,7 +59,8 @@ const main = async () => {
             resolvers: [HelloResolver, PostResolver, UserResolver],
             validate: false
         }),
-    context: ({ req, res }) => ({ em: orm.em, req, res }) // Context is a special object that is accessible by all resolvers
+        // Context is a special object that is accessible by all resolvers
+        context: ({ req, res }) => ({ em: orm.em, req, res }),
     });
 
     apolloServer.applyMiddleware({ app, cors: false });
@@ -72,12 +73,6 @@ const main = async () => {
     app.listen(4000, () => {
         console.log("Server started on localhost:4000");
     });
-
-    // const post = orm.em.create(Post, {title: 'my first post'});
-    // await orm.em.persistAndFlush(post);
-
-    // const posts = await orm.em.find(Post, {});
-    // console.log(posts);
 }
 
 main().catch((err) => {
